@@ -14,23 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="bin\Debug\net6.0\appsettings.json" />
-      <None Remove="bin\**" />
       <None Update="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="bin\Debug\net6.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="bin\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Remove="bin\**" />
-    </ItemGroup>
-
+    
 </Project>
