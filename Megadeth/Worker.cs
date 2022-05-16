@@ -8,7 +8,9 @@ public class Worker: BackgroundService
 {
     private readonly AppSettings _appSettings;
     private TdClient _client;
-
+    private bool _authNeeded;
+    private bool _passwordNeeded;
+    private readonly ManualResetEventSlim _readyToAuthenticate = new();
     public Worker(
         TdClient client,
         AppSettings appSettings)
@@ -20,11 +22,11 @@ public class Worker: BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _client.UpdateReceived += async (_, update) => { await ProcessUpdates(update); };
-        _appSettings.ReadyToAuthenticate.Wait();
+        _readyToAuthenticate.Wait();
         // We may not need to authenticate since TdLib persists session in 'td.binlog' file.
         // See 'TdlibParameters' class for more information, or:
         // https://core.telegram.org/tdlib/docs/classtd_1_1td__api_1_1tdlib_parameters.html
-        if (_appSettings.AuthNeeded)
+        if (_authNeeded)
         {
             // Interactively handling authentication
             await HandleAuthentication();
@@ -59,7 +61,7 @@ public class Worker: BackgroundService
             Code = code
         });
 
-        if(!_appSettings.PasswordNeeded) { return; }
+        if(_passwordNeeded) { return; }
 
         // 2FA may be enabled. Cloud password is required in that case.
         Console.Write("Insert the password: ");
@@ -105,18 +107,18 @@ public class Worker: BackgroundService
 
             case TdApi.Update.UpdateAuthorizationState { AuthorizationState: TdApi.AuthorizationState.AuthorizationStateWaitPhoneNumber }:
             case TdApi.Update.UpdateAuthorizationState { AuthorizationState: TdApi.AuthorizationState.AuthorizationStateWaitCode }:
-                _appSettings.AuthNeeded = true;
-                _appSettings.ReadyToAuthenticate.Set();
+                _authNeeded = true;
+                _readyToAuthenticate.Set();
                 break;
 
             case TdApi.Update.UpdateAuthorizationState { AuthorizationState: TdApi.AuthorizationState.AuthorizationStateWaitPassword }:
-                _appSettings.AuthNeeded = true;
-                _appSettings.PasswordNeeded = true;
-                _appSettings.ReadyToAuthenticate.Set();
+                _authNeeded = true;
+                _passwordNeeded = true;
+                _readyToAuthenticate.Set();
                 break;
 
             case TdApi.Update.UpdateUser:
-                _appSettings.ReadyToAuthenticate.Set();
+                _readyToAuthenticate.Set();
                 break;
 
             case TdApi.Update.UpdateConnectionState { State: TdApi.ConnectionState.ConnectionStateReady }:

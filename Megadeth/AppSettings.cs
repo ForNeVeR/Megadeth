@@ -6,8 +6,4 @@ public class AppSettings
     public string ApiHash { get; init; }
     public  string PhoneNumber { get; init; }
     public  string ApplicationVersion { get; set; }
-
-    public  bool AuthNeeded { get; set; }
-    public  bool PasswordNeeded { get; set; }
-    public readonly ManualResetEventSlim ReadyToAuthenticate = new();
 }
