@@ -37,6 +37,8 @@ public class Worker: BackgroundService
         Console.WriteLine($"Successfully logged in as [{currentUser.Id}] / [@{currentUser.Username}] / [{fullUserName}]");
 
         Console.WriteLine("Press ENTER to exit from application");
+        Console.ReadKey();
+        Environment.Exit(0);
 
     }
 
