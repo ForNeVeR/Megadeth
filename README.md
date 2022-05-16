@@ -11,14 +11,13 @@ Megadeth is an auxiliary bot which you may run on your own account which will he
 
 Requirements
 ------------
-
 This bot requires [.NET SDK 6][dotnet-sdk] or later.
 
 How to use
 ----------
 
 1. Make sure you're registered on https://my.telegram.org/
-2. Fill in your details into the beginning of the `Program.cs` file: `ApiId`, `ApiHash` (obtained from my.telegram.org), `PhoneNumber`
+2. Fill in your details into the file appsettings.json
 3. Start the bot via `dotnet run`, authenticate if required (usually only required once; the bot will reuse the authentication data on future starts)
 4. Locate the message which has received a reaction from a spam bot
 5. Reply to this message with text "/megadeth XXX", where `XXX` is a starting part of a bot account first or last name
@@ -26,4 +25,14 @@ How to use
    (this is required to avoid banning normal user accounts in case there are several normal reactions among one from a spam bot on the infected message)
 6. Megadeth will ban the bot account in the chat where you've replied the message
 
+**Appsettings.json**
+--------------------
+```json
+ "Configuration": {
+        "ApiId" : "",
+        "ApiHash" : "",
+        "PhoneNumber" : "",
+        "ApplicationVersion": ""
+    }
+```
 [dotnet-sdk]: https://dot.net
