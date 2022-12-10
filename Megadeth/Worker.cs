@@ -61,7 +61,10 @@ public class Worker: BackgroundService
             Code = code
         });
 
-        if(_passwordNeeded) { return; }
+        if (!_passwordNeeded)
+        {
+            return;
+        }
 
         // 2FA may be enabled. Cloud password is required in that case.
         Console.Write("Insert the password: ");
